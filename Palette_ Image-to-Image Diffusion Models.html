@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>D²Mamba: Dual Dynamic State Space Model for Curvilinear Structure Segmentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Merriweather:ital,wght@0,400;0,700;1,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lato',sans-serif;background:#fff;color:#222;line-height:1.65}
+a{color:inherit;text-decoration:none}
+
+.page{max-width:920px;margin:0 auto;padding:0 24px}
+
+/* ── HEADER ─────────────────────────────────────────── */
+.site-header{text-align:center;padding:72px 24px 52px}
+.site-header h1{
+  font-family:'Merriweather',serif;
+  font-size:clamp(1.35rem,3.2vw,2rem);
+  font-weight:700;line-height:1.45;color:#111;
+  max-width:780px;margin:0 auto 26px
+}
+.authors{font-size:.98rem;color:#444;margin-bottom:5px}
+.affil{font-size:.85rem;color:#888;margin-bottom:28px}
+.link-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.badge{
+  display:inline-block;padding:7px 22px;
+  border:1.5px solid #333;border-radius:3px;
+  font-size:.92rem;font-weight:700;letter-spacing:.03em;
+  transition:background .16s,color .16s
+}
+.badge:hover{background:#222;color:#fff}
+
+/* ── SECTIONS ────────────────────────────────────────── */
+.sec{padding:50px 0;border-top:1px solid #ebebeb}
+.sec-title{
+  font-family:'Merriweather',serif;font-size:1.4rem;font-weight:700;
+  text-align:center;margin-bottom:18px;color:#111
+}
+.sec-desc{
+  text-align:center;color:#555;font-size:.92rem;
+  max-width:680px;margin:0 auto 26px;line-height:1.75
+}
+.abstract-text{
+  font-family:'Merriweather',serif;font-size:.92rem;
+  line-height:1.95;color:#333;text-align:justify
+}
+
+/* ── CAROUSEL ────────────────────────────────────────── */
+.car-wrap{max-width:720px;margin:0 auto}
+.car-slides{border:1px solid #e0e0e0;border-radius:4px;overflow:hidden}
+.slide{display:none}
+.slide.active{display:block}
+.slide canvas{display:block;width:100%;height:auto}
+.slide-cap{
+  padding:9px 16px;font-size:.82rem;color:#555;
+  background:#fafafa;border-top:1px solid #eee;
+  text-align:center;font-style:italic;line-height:1.55
+}
+.car-ctrls{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px}
+.cbtn{
+  background:none;border:1.5px solid #bbb;width:33px;height:33px;
+  border-radius:50%;cursor:pointer;font-size:12px;color:#444;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;line-height:1
+}
+.cbtn:hover{border-color:#111;background:#111;color:#fff}
+.cdots{display:flex;gap:8px}
+.cdot{
+  width:7px;height:7px;border-radius:50%;background:#ccc;
+  cursor:pointer;border:none;transition:background .15s
+}
+.cdot.on{background:#333}
+
+/* ── BIBTEX ──────────────────────────────────────────── */
+.bib{
+  background:#f6f6f6;border:1px solid #e0e0e0;border-radius:4px;
+  padding:20px 24px;font-family:'Courier New',monospace;
+  font-size:.8rem;line-height:1.75;overflow-x:auto;white-space:pre
+}
+
+/* ── FOOTER ──────────────────────────────────────────── */
+footer{
+  text-align:center;padding:36px 24px;border-top:1px solid #ebebeb;
+  font-size:.8rem;color:#bbb
+}
+
+@media(max-width:600px){
+  .site-header{padding:44px 16px 34px}
+  .sec{padding:34px 0}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════ -->
+<header class="site-header">
+  <h1>D<sup>2</sup>Mamba: Dual Dynamic State Space Model<br>for Curvilinear Structure Segmentation</h1>
+  <div class="authors">
+    Author One<sup>1</sup>&ensp;
+    Author Two<sup>1</sup>&ensp;
+    Author Three<sup>2</sup>&ensp;
+    Author Four<sup>1</sup>
+  </div>
+  <div class="affil">
+    <sup>1</sup>Institution One &emsp; <sup>2</sup>Institution Two
+  </div>
+  <div class="link-row">
+    <a href="#" class="badge">[Paper]</a>
+    <a href="#" class="badge">[Code]</a>
+    <a href="#" class="badge">[SpermSeg Dataset]</a>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- ══ ABSTRACT ══════════════════════════════════════ -->
+  <section class="sec">
+    <h2 class="sec-title">Abstract</h2>
+    <p class="abstract-text">
+      Curvilinear structure segmentation—encompassing retinal vessels, nerve fibers, road networks, and
+      sperm tails—is a fundamental problem in medical and remote-sensing image analysis. Existing CNN-based
+      methods are limited by their local receptive fields, while Vision Transformers suffer from quadratic
+      computational complexity, both struggling to capture the global structural continuity intrinsic to
+      curvilinear shapes. We propose <strong>D<sup>2</sup>Mamba</strong>, a <strong>D</strong>ual
+      <strong>D</strong>ynamic State Space Model that introduces two complementary selective scanning
+      streams: a directional multi-scale scan that traces structural continuity along curvilinear paths, and
+      a frequency-aware dynamic scan that exploits texture-level discriminability at fine scales. The two
+      streams are fused via a learnable gating mechanism, yielding rich representations with linear
+      computational complexity. We further introduce <strong>SpermSeg</strong>, a challenging new benchmark
+      with pixel-level annotations for sperm <span style="color:#c94444">head</span>,
+      <span style="color:#1a9958">midpiece</span>, and <span style="color:#2277cc">tail</span> regions.
+      Extensive experiments on SpermSeg and four public benchmarks show that D<sup>2</sup>Mamba achieves
+      state-of-the-art performance while maintaining competitive efficiency.
+    </p>
+  </section>
+
+  <!-- ══ SPERMSEG DATASET ═══════════════════════════════ -->
+  <section class="sec">
+    <h2 class="sec-title">SpermSeg Dataset</h2>
+    <p class="sec-desc">
+      SpermSeg is a new benchmark for fine-grained sperm morphology segmentation, providing pixel-level
+      labels for the <strong style="color:#c94444">head</strong>,
+      <strong style="color:#1a9958">midpiece</strong>, and
+      <strong style="color:#2277cc">tail</strong> across diverse staining conditions and magnification levels.
+      Use the arrows to browse example annotations.
+    </p>
+    <div class="car-wrap">
+      <div class="car-slides" id="ds-slides"></div>
+      <div class="car-ctrls">
+        <button class="cbtn" id="ds-prev">&#10094;</button>
+        <div class="cdots" id="ds-dots"></div>
+        <button class="cbtn" id="ds-next">&#10095;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ MORE RESULTS ════════════════════════════════════ -->
+  <section class="sec">
+    <h2 class="sec-title">More Results</h2>
+    <p class="sec-desc">
+      Qualitative comparisons of D<sup>2</sup>Mamba against state-of-the-art methods on multiple
+      curvilinear structure segmentation benchmarks. Use the arrows to view additional examples.
+    </p>
+    <div class="car-wrap">
+      <div class="car-slides" id="res-slides"></div>
+      <div class="car-ctrls">
+        <button class="cbtn" id="res-prev">&#10094;</button>
+        <div class="cdots" id="res-dots"></div>
+        <button class="cbtn" id="res-next">&#10095;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ BIBTEX ════════════════════════════════════════ -->
+  <section class="sec">
+    <h2 class="sec-title">BibTeX</h2>
+    <div class="bib">@inproceedings{d2mamba2024,
+  title     = {{D$^2$Mamba}: Dual Dynamic State Space Model
+               for Curvilinear Structure Segmentation},
+  author    = {Author One and Author Two and Author Three and Author Four},
+  booktitle = {Conference / Journal Name},
+  year      = {2024}
+}</div>
+  </section>
+
+</div><!-- /page -->
+
+<footer>D<sup>2</sup>Mamba Project Page</footer>
+
+<!-- ══════════════════════════════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════════════════════════════ -->
+<script>
+/* ── Seeded PRNG ─────────────────────────────────────── */
+function mkRand(seed){
+  let s=seed>>>0;
+  return()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/0xffffffff};
+}
+
+/* ── Draw microscopy-style background ────────────────── */
+function drawMicBg(ctx,x,y,w,h,rand){
+  const grd=ctx.createRadialGradient(x+w/2,y+h/2,8,x+w/2,y+h/2,Math.max(w,h)*0.72);
+  grd.addColorStop(0,'hsl(220,18%,17%)');
+  grd.addColorStop(1,'hsl(220,12%,7%)');
+  ctx.fillStyle=grd;ctx.fillRect(x,y,w,h);
+  for(let i=0;i<w*h*0.012;i++){
+    ctx.fillStyle=`rgba(255,255,255,${rand()*0.055})`;
+    ctx.fillRect(x+rand()*w,y+rand()*h,1.5,1.5);
+  }
+}
+
+/* ── Draw one sperm cell ─────────────────────────────── */
+function drawSperm(ctx,cx,cy,ang,sc,mode,rand){
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(ang);ctx.scale(sc,sc);
+  const err=mode==='pred'?(rand()-0.5)*3:0;
+  if(mode==='raw'){
+    // Head
+    ctx.beginPath();ctx.ellipse(0,0,14,9,0,0,Math.PI*2);
+    ctx.fillStyle='rgba(210,198,178,0.95)';ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.18)';ctx.lineWidth=.6;ctx.stroke();
+    // Midpiece
+    ctx.beginPath();ctx.ellipse(21,0,8,4.5,0,0,Math.PI*2);
+    ctx.fillStyle='rgba(175,158,130,0.9)';ctx.fill();
+    // Tail
+    ctx.beginPath();
+    for(let t=0;t<=68;t++){
+      const tx=29+t,ty=Math.sin(t*.13)*5.5*Math.exp(-t/85);
+      t===0?ctx.moveTo(tx,ty):ctx.lineTo(tx,ty);
+    }
+    ctx.strokeStyle='rgba(215,210,195,0.82)';ctx.lineWidth=1.6;ctx.stroke();
+  } else {
+    // Head mask
+    ctx.beginPath();ctx.ellipse(err*.5,err*.4,15+err*.3,10+err*.2,0,0,Math.PI*2);
+    ctx.fillStyle=mode==='pred'?'rgba(200,68,68,0.88)':'rgba(210,58,58,1)';ctx.fill();
+    // Midpiece mask
+    ctx.beginPath();ctx.ellipse(21+err*.4,err*.3,9,5.5,0,0,Math.PI*2);
+    ctx.fillStyle=mode==='pred'?'rgba(28,158,80,0.88)':'rgba(26,153,88,1)';ctx.fill();
+    // Tail mask
+    ctx.beginPath();
+    for(let t=0;t<=68;t++){
+      const tx=29+t+err*.8,ty=Math.sin(t*.13)*5.5*Math.exp(-t/85)+err*.5;
+      t===0?ctx.moveTo(tx,ty):ctx.lineTo(tx,ty);
+    }
+    ctx.strokeStyle=mode==='pred'?'rgba(50,130,220,0.85)':'rgba(34,119,210,1)';
+    ctx.lineWidth=4;ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/* ── Pre-generate vessel tree branch data ────────────── */
+function genBranches(cx,cy,ang,len,seed){
+  const rand=mkRand(seed);
+  const list=[];
+  (function rec(x,y,a,l,d){
+    if(d>6||l<3.5)return;
+    const x2=x+Math.cos(a)*l,y2=y+Math.sin(a)*l;
+    list.push({x,y,x2,y2,d});
+    const sp=.32+rand()*.12,lr=l*(.60+rand()*.12);
+    rec(x2,y2,a-sp,lr,d+1);
+    rec(x2,y2,a+sp*(.8+rand()*.3),lr*.88,d+1);
+    if(d<2)rec(x2,y2,a+.12+rand()*.18,lr*.52,d+2);
+  })(cx,cy,ang,len,0);
+  return list;
+}
+
+function renderBranches(ctx,branches,mode){
+  ctx.lineCap='round';ctx.lineJoin='round';
+  branches.forEach(({x,y,x2,y2,d})=>{
+    const lw=Math.max(.5,4.2-d*.62);
+    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x2,y2);ctx.lineWidth=lw;
+    if(mode==='raw')
+      ctx.strokeStyle=`rgba(${168-d*9},${48+d*5},${45+d*3},${.88-d*.08})`;
+    else if(mode==='gt')
+      ctx.strokeStyle=`rgba(255,255,255,${.92-d*.06})`;
+    else
+      ctx.strokeStyle=`rgba(160,205,255,${.85-d*.06})`;
+    ctx.stroke();
+  });
+}
+
+/* ── Build dataset canvas (left: image, right: mask) ─── */
+function buildDsCanvas(idx){
+  const W=680,H=290;
+  const c=document.createElement('canvas');c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  const half=W/2;
+  const r=mkRand(idx*9371+1);
+
+  // Left panel – raw
+  drawMicBg(ctx,0,0,half,H,mkRand(idx*1234+2));
+  // Right panel – mask bg
+  const grd=ctx.createRadialGradient(half+half/2,H/2,5,half+half/2,H/2,half*.8);
+  grd.addColorStop(0,'hsl(225,20%,10%)');grd.addColorStop(1,'hsl(225,15%,4%)');
+  ctx.fillStyle=grd;ctx.fillRect(half,0,half,H);
+  // right grain
+  for(let i=0;i<half*H*.008;i++){
+    ctx.fillStyle=`rgba(255,255,255,${mkRand(idx*77+i)()*.04})`;
+    ctx.fillRect(half+mkRand(idx*88+i)()*half,mkRand(idx*99+i)()*H,1.5,1.5);
+  }
+
+  // cell configs (relative to left-half coords)
+  const cells=[
+    [half*.26,H*.32,-.18,.82],
+    [half*.60,H*.60, .20,.72],
+    [half*.14,H*.74, .38,.60],
+    [half*.56,H*.20,-.32,.88],
+    [half*.80,H*.82, .10,.65],
+  ].map(([bx,by,a,sc])=>[
+    bx+(r()-.5)*14, by+(r()-.5)*14,
+    a+(r()-.5)*.18, sc+(r()-.5)*.08
+  ]);
+
+  const r2=mkRand(idx*5555+3);
+  // Draw left
+  ctx.save();ctx.beginPath();ctx.rect(0,0,half-1,H);ctx.clip();
+  cells.forEach(([bx,by,a,sc])=>drawSperm(ctx,bx,by,a,sc,'raw',r2));
+  ctx.restore();
+  // Draw right
+  const r3=mkRand(idx*5555+3);// same structure
+  ctx.save();ctx.beginPath();ctx.rect(half+1,0,half-1,H);ctx.clip();
+  cells.forEach(([bx,by,a,sc])=>drawSperm(ctx,half+bx,by,a,sc,'gt',r3));
+  ctx.restore();
+
+  // Divider
+  ctx.fillStyle='rgba(255,255,255,0.22)';ctx.fillRect(half-1,0,2,H);
+  // Label bars
+  [[0,'Input Image'],[half,'Annotation Mask']].forEach(([ox,lbl])=>{
+    ctx.fillStyle='rgba(0,0,0,.58)';ctx.fillRect(ox,H-27,half-1,27);
+    ctx.fillStyle='#fff';ctx.font='bold 12px Lato,sans-serif';
+    ctx.textAlign='center';ctx.fillText(lbl,ox+half*.5,H-9);
+  });
+  // Legend
+  [['Head','#d44444'],['Midpiece','#1a9958'],['Tail','#2277cc']].forEach(([lbl,col],i)=>{
+    const lx=half+13,ly=13+i*19;
+    ctx.fillStyle=col;ctx.fillRect(lx,ly,13,13);
+    ctx.fillStyle='#eee';ctx.font='10px Lato,sans-serif';ctx.textAlign='left';
+    ctx.fillText(lbl,lx+17,ly+10);
+  });
+  return c;
+}
+
+/* ── Build results canvas (3 panels: input|GT|pred) ──── */
+function buildResCanvas(idx){
+  const W=681,H=264;
+  const c=document.createElement('canvas');c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  const pw=Math.floor(W/3);
+  const tasks=['sperm','vessel','stare'];
+  const task=tasks[idx%3];
+  const modes=['raw','gt','pred'];
+  const seeds=[idx*1111+10,idx*2222+20,idx*3333+30];
+
+  modes.forEach((mode,mi)=>{
+    const ox=mi*pw;
+    if(task==='sperm'){
+      // background
+      if(mode==='raw') drawMicBg(ctx,ox,0,pw,H,mkRand(idx*444+mi));
+      else {
+        const gb=ctx.createRadialGradient(ox+pw/2,H/2,5,ox+pw/2,H/2,pw*.7);
+        gb.addColorStop(0,'hsl(225,22%,10%)');gb.addColorStop(1,'hsl(225,15%,4%)');
+        ctx.fillStyle=gb;ctx.fillRect(ox,0,pw,H);
+      }
+      ctx.save();ctx.beginPath();ctx.rect(ox,0,pw,H);ctx.clip();
+      const r=mkRand(idx*7777+1);
+      const cells=[
+        [pw*.28,H*.30,-.15,.75],[pw*.65,H*.60, .22,.65],[pw*.18,H*.75, .35,.58]
+      ].map(([bx,by,a,sc])=>[bx+(r()-.5)*10,by+(r()-.5)*10,a,sc]);
+      const dr=mkRand(idx*7777+1+mi*100);
+      cells.forEach(([bx,by,a,sc])=>drawSperm(ctx,ox+bx,by,a,sc,mode,dr));
+      ctx.restore();
+    } else {
+      // retinal vessel
+      const isRaw=mode==='raw';
+      if(isRaw){
+        const grd=ctx.createRadialGradient(ox+pw/2,H/2,6,ox+pw/2,H/2,pw*.65);
+        grd.addColorStop(0,task==='vessel'?'hsl(0,38%,13%)':'hsl(10,30%,10%)');
+        grd.addColorStop(.75,task==='vessel'?'hsl(0,28%,6%)':'hsl(10,22%,5%)');
+        grd.addColorStop(1,'#000');
+        ctx.fillStyle=grd;ctx.fillRect(ox,0,pw,H);
+        // optic disc glow
+        const od=ctx.createRadialGradient(ox+pw*.62,H*.44,2,ox+pw*.62,H*.44,pw*.1);
+        od.addColorStop(0,'rgba(255,215,140,.45)');od.addColorStop(1,'rgba(255,200,100,0)');
+        ctx.fillStyle=od;ctx.fillRect(ox,0,pw,H);
+      } else {
+        ctx.fillStyle='#000';ctx.fillRect(ox,0,pw,H);
+      }
+      const branches=genBranches(
+        ox+pw*.5,H*.52,
+        task==='vessel'?-Math.PI*.52:Math.PI*.18,
+        task==='vessel'?56:60,
+        idx*8888+9
+      );
+      ctx.save();ctx.beginPath();ctx.rect(ox,0,pw,H);ctx.clip();
+      renderBranches(ctx,branches,mode);
+      if(task==='vessel'){
+        const b2=genBranches(ox+pw*.5,H*.52,Math.PI*.28,38,idx*8888+99);
+        const b3=genBranches(ox+pw*.5,H*.52,Math.PI*.72,32,idx*8888+999);
+        renderBranches(ctx,b2,mode);renderBranches(ctx,b3,mode);
+      }
+      ctx.restore();
+    }
+    // Label bar
+    ctx.fillStyle='rgba(0,0,0,.62)';ctx.fillRect(ox,H-26,pw,26);
+    const lbl={raw:'Input',gt:'Ground Truth',pred:'D²Mamba (Ours)'}[mode];
+    ctx.fillStyle=mode==='pred'?'#8ef5b0':'#fff';
+    ctx.font='bold 11px Lato,sans-serif';ctx.textAlign='center';
+    ctx.fillText(lbl,ox+pw/2,H-9);
+    // Divider
+    if(mi<2){ctx.fillStyle='rgba(255,255,255,.22)';ctx.fillRect(ox+pw-1,0,2,H);}
+  });
+  return c;
+}
+
+/* ── Generic carousel factory ────────────────────────── */
+function initCarousel(opts){
+  const {slidesId,dotsId,prevId,nextId,count,builder,captions}=opts;
+  const slidesEl=document.getElementById(slidesId);
+  const dotsEl=document.getElementById(dotsId);
+  let cur=0;
+  const sEls=[],dEls=[];
+
+  for(let i=0;i<count;i++){
+    const div=document.createElement('div');
+    div.className='slide'+(i===0?' active':'');
+    const cv=builder(i);cv.style.display='block';cv.style.width='100%';cv.style.height='auto';
+    div.appendChild(cv);
+    if(captions&&captions[i]){
+      const cap=document.createElement('div');cap.className='slide-cap';
+      cap.innerHTML=captions[i];div.appendChild(cap);
+    }
+    slidesEl.appendChild(div);sEls.push(div);
+
+    const dot=document.createElement('button');
+    dot.className='cdot'+(i===0?' on':'');
+    dot.setAttribute('aria-label',`Slide ${i+1}`);
+    dot.addEventListener('click',()=>go(i));
+    dotsEl.appendChild(dot);dEls.push(dot);
+  }
+
+  function go(n){
+    sEls[cur].classList.remove('active');dEls[cur].classList.remove('on');
+    cur=(n+count)%count;
+    sEls[cur].classList.add('active');dEls[cur].classList.add('on');
+  }
+  document.getElementById(prevId).addEventListener('click',()=>go(cur-1));
+  document.getElementById(nextId).addEventListener('click',()=>go(cur+1));
+}
+
+/* ── Init both carousels ─────────────────────────────── */
+initCarousel({
+  slidesId:'ds-slides',dotsId:'ds-dots',prevId:'ds-prev',nextId:'ds-next',
+  count:3, builder:buildDsCanvas,
+  captions:[
+    'Sample&nbsp;1: Bright-field microscopy — head <span style="color:#c94444">■</span>, midpiece <span style="color:#1a9958">■</span>, and tail <span style="color:#2277cc">■</span> annotations.',
+    'Sample&nbsp;2: Phase-contrast microscopy with multiple sperm cells and fine-grained morphology labels.',
+    'Sample&nbsp;3: Challenging cases featuring partial occlusion, overlapping cells, and low-contrast staining.',
+  ]
+});
+
+initCarousel({
+  slidesId:'res-slides',dotsId:'res-dots',prevId:'res-prev',nextId:'res-next',
+  count:3, builder:buildResCanvas,
+  captions:[
+    'Results on <strong>SpermSeg</strong>: D<sup>2</sup>Mamba accurately delineates all three morphological regions even in cluttered scenes.',
+    'Results on <strong>DRIVE</strong> (retinal vessel segmentation): D<sup>2</sup>Mamba captures fine capillary structures with high connectivity.',
+    'Results on <strong>STARE</strong> (retinal vessel segmentation): D<sup>2</sup>Mamba maintains structural continuity in challenging pathological regions.',
+  ]
+});
+</script>
+</body>
+</html>
