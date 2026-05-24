@@ -18,7 +18,12 @@ a{color:inherit;text-decoration:none}
   font-family:'Merriweather',serif;
   font-size:clamp(1.35rem,3.2vw,2rem);
   font-weight:700;line-height:1.45;color:#111;
-  max-width:780px;margin:0 auto 26px
+  max-width:780px;margin:0 auto 16px
+}
+.status{
+  background:#f0f0f0;display:inline-block;padding:4px 16px;
+  border-radius:40px;font-size:0.8rem;color:#555;
+  margin-bottom:24px;font-weight:500;
 }
 .authors{font-size:.98rem;color:#444;margin-bottom:5px}
 .affil{font-size:.85rem;color:#888;margin-bottom:28px}
@@ -46,12 +51,12 @@ a{color:inherit;text-decoration:none}
   line-height:1.95;color:#333;text-align:justify
 }
 
-/* ── CAROUSEL ────────────────────────────────────────── */
-.car-wrap{max-width:720px;margin:0 auto}
-.car-slides{border:1px solid #e0e0e0;border-radius:4px;overflow:hidden}
+/* ── CAROUSEL (通用) ────────────────────────────────── */
+.car-wrap{max-width:720px;margin:0 auto;margin-bottom:30px}
+.car-slides{border:1px solid #e0e0e0;border-radius:4px;overflow:hidden;background:#f9f9f9}
 .slide{display:none}
 .slide.active{display:block}
-.slide canvas{display:block;width:100%;height:auto}
+.slide img{display:block;width:100%;height:auto}
 .slide-cap{
   padding:9px 16px;font-size:.82rem;color:#555;
   background:#fafafa;border-top:1px solid #eee;
@@ -72,11 +77,22 @@ a{color:inherit;text-decoration:none}
 }
 .cdot.on{background:#333}
 
-/* ── BIBTEX ──────────────────────────────────────────── */
-.bib{
-  background:#f6f6f6;border:1px solid #e0e0e0;border-radius:4px;
-  padding:20px 24px;font-family:'Courier New',monospace;
-  font-size:.8rem;line-height:1.75;overflow-x:auto;white-space:pre
+/* 五个数据集的网格布局 */
+.results-grid{
+  display:flex;flex-direction:column;gap:40px;
+  margin-top:20px;
+}
+.dataset-card{
+  border-bottom:1px solid #eee;
+  padding-bottom:20px;
+}
+.dataset-title{
+  font-size:1.2rem;font-weight:700;text-align:center;
+  margin-bottom:16px;color:#1a1a1a;
+  letter-spacing:-0.2px;
+}
+.dataset-title span{
+  background:#eef2f5;padding:4px 14px;border-radius:30px;
 }
 
 /* ── FOOTER ──────────────────────────────────────────── */
@@ -95,6 +111,7 @@ footer{
 
 <!-- ══ HEADER ══════════════════════════════════════════ -->
 <header class="site-header">
+  <div class="status">📌 Currently under review at IEEE Transactions on Medical Imaging (TMI)</div>
   <h1>D<sup>2</sup>Mamba: Dual Dynamic State Space Model<br>for Curvilinear Structure Segmentation</h1>
   <div class="authors">
     Yufei Jin<sup>1,2</sup>&ensp;
@@ -143,12 +160,14 @@ footer{
   <section class="sec">
     <h2 class="sec-title">SpermSeg Dataset</h2>
     <p class="sec-desc">
-      SpermSeg is a new benchmark for fine-grained sperm morphology segmentation, providing pixel-level
-      labels for the <strong style="color:#c94444">head</strong>,
-      <strong style="color:#1a9958">midpiece</strong>, and
-      <strong style="color:#2277cc">tail</strong> across diverse staining conditions and magnification levels.
-      Use the arrows to browse example annotations.
+      SpermSeg is the <strong>first publicly available dataset</strong> dedicated to <strong>sperm flagellum segmentation</strong> from bright‑field microscopy.
+      It comprises <strong>310 white‑light images</strong> (1920 × 1200 pixels each), each capturing multiple spermatozoa with intact flagella under realistic,
+      unlabeled conditions. Pixel‑wise binary masks are provided for the flagellar regions, enabling supervised learning
+      of curvilinear structures in densely cluttered scenes with low contrast, overlapping tails, and debris.
+      Beyond CASA (computer‑assisted sperm analysis), SpermSeg serves as a challenging benchmark for general curvilinear object segmentation
+      (e.g., retinal vessels, roads, plant roots). Below are three example raw images from the dataset.
     </p>
+    <!-- 轮播图：三个原始白光图像 -->
     <div class="car-wrap">
       <div class="car-slides" id="ds-slides"></div>
       <div class="car-ctrls">
@@ -159,318 +178,148 @@ footer{
     </div>
   </section>
 
-  <!-- ══ MORE RESULTS ════════════════════════════════════ -->
+  <!-- ══ MORE RESULTS (5个数据集，每个3图轮播) ═══════════ -->
   <section class="sec">
     <h2 class="sec-title">More Results</h2>
     <p class="sec-desc">
-      Qualitative comparisons of D<sup>2</sup>Mamba against state-of-the-art methods on multiple
-      curvilinear structure segmentation benchmarks. Use the arrows to view additional examples.
+      Qualitative comparisons of D<sup>2</sup>Mamba against state-of-the-art methods on multiple curvilinear structure segmentation benchmarks.
+      Each dataset below shows three representative samples.
     </p>
-    <div class="car-wrap">
-      <div class="car-slides" id="res-slides"></div>
-      <div class="car-ctrls">
-        <button class="cbtn" id="res-prev">&#10094;</button>
-        <div class="cdots" id="res-dots"></div>
-        <button class="cbtn" id="res-next">&#10095;</button>
-      </div>
+    <div class="results-grid" id="results-grid">
+      <!-- 五个数据集卡片会由JS动态生成，保证结构一致 -->
     </div>
-  </section>
-
-  <!-- ══ BIBTEX ════════════════════════════════════════ -->
-  <section class="sec">
-    <h2 class="sec-title">BibTeX</h2>
-    <div class="bib">@inproceedings{d2mamba2024,
-  title     = {{D$^2$Mamba}: Dual Dynamic State Space Model
-               for Curvilinear Structure Segmentation},
-  author    = {Author One and Author Two and Author Three and Author Four},
-  booktitle = {Conference / Journal Name},
-  year      = {2024}
-}</div>
   </section>
 
 </div><!-- /page -->
 
 <footer>D<sup>2</sup>Mamba Project Page</footer>
 
-<!-- ══════════════════════════════════════════════════════
-     JAVASCRIPT
-     ══════════════════════════════════════════════════════ -->
 <script>
-/* ── Seeded PRNG ─────────────────────────────────────── */
-function mkRand(seed){
-  let s=seed>>>0;
-  return()=>{s=(Math.imul(s,1664525)+1013904223)>>>0;return s/0xffffffff};
-}
-
-/* ── Draw microscopy-style background ────────────────── */
-function drawMicBg(ctx,x,y,w,h,rand){
-  const grd=ctx.createRadialGradient(x+w/2,y+h/2,8,x+w/2,y+h/2,Math.max(w,h)*0.72);
-  grd.addColorStop(0,'hsl(220,18%,17%)');
-  grd.addColorStop(1,'hsl(220,12%,7%)');
-  ctx.fillStyle=grd;ctx.fillRect(x,y,w,h);
-  for(let i=0;i<w*h*0.012;i++){
-    ctx.fillStyle=`rgba(255,255,255,${rand()*0.055})`;
-    ctx.fillRect(x+rand()*w,y+rand()*h,1.5,1.5);
-  }
-}
-
-/* ── Draw one sperm cell ─────────────────────────────── */
-function drawSperm(ctx,cx,cy,ang,sc,mode,rand){
-  ctx.save();ctx.translate(cx,cy);ctx.rotate(ang);ctx.scale(sc,sc);
-  const err=mode==='pred'?(rand()-0.5)*3:0;
-  if(mode==='raw'){
-    // Head
-    ctx.beginPath();ctx.ellipse(0,0,14,9,0,0,Math.PI*2);
-    ctx.fillStyle='rgba(210,198,178,0.95)';ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,0.18)';ctx.lineWidth=.6;ctx.stroke();
-    // Midpiece
-    ctx.beginPath();ctx.ellipse(21,0,8,4.5,0,0,Math.PI*2);
-    ctx.fillStyle='rgba(175,158,130,0.9)';ctx.fill();
-    // Tail
-    ctx.beginPath();
-    for(let t=0;t<=68;t++){
-      const tx=29+t,ty=Math.sin(t*.13)*5.5*Math.exp(-t/85);
-      t===0?ctx.moveTo(tx,ty):ctx.lineTo(tx,ty);
+// 通用轮播初始化函数
+function initCarousel(slidesContainerId, dotsContainerId, prevBtnId, nextBtnId, imagePaths, captions) {
+  const slidesContainer = document.getElementById(slidesContainerId);
+  const dotsContainer = document.getElementById(dotsContainerId);
+  const prevBtn = document.getElementById(prevBtnId);
+  const nextBtn = document.getElementById(nextBtnId);
+  
+  if (!slidesContainer || !dotsContainer || !prevBtn || !nextBtn) return;
+  
+  let currentIndex = 0;
+  const slideElements = [];
+  const dotElements = [];
+  
+  // 清空容器
+  slidesContainer.innerHTML = '';
+  dotsContainer.innerHTML = '';
+  
+  // 创建每个slide
+  imagePaths.forEach((path, idx) => {
+    const slideDiv = document.createElement('div');
+    slideDiv.className = 'slide' + (idx === 0 ? ' active' : '');
+    
+    const img = document.createElement('img');
+    img.src = path;
+    img.alt = `Sample ${idx+1}`;
+    img.style.width = '100%';
+    img.style.display = 'block';
+    slideDiv.appendChild(img);
+    
+    if (captions && captions[idx]) {
+      const capDiv = document.createElement('div');
+      capDiv.className = 'slide-cap';
+      capDiv.innerHTML = captions[idx];
+      slideDiv.appendChild(capDiv);
     }
-    ctx.strokeStyle='rgba(215,210,195,0.82)';ctx.lineWidth=1.6;ctx.stroke();
-  } else {
-    // Head mask
-    ctx.beginPath();ctx.ellipse(err*.5,err*.4,15+err*.3,10+err*.2,0,0,Math.PI*2);
-    ctx.fillStyle=mode==='pred'?'rgba(200,68,68,0.88)':'rgba(210,58,58,1)';ctx.fill();
-    // Midpiece mask
-    ctx.beginPath();ctx.ellipse(21+err*.4,err*.3,9,5.5,0,0,Math.PI*2);
-    ctx.fillStyle=mode==='pred'?'rgba(28,158,80,0.88)':'rgba(26,153,88,1)';ctx.fill();
-    // Tail mask
-    ctx.beginPath();
-    for(let t=0;t<=68;t++){
-      const tx=29+t+err*.8,ty=Math.sin(t*.13)*5.5*Math.exp(-t/85)+err*.5;
-      t===0?ctx.moveTo(tx,ty):ctx.lineTo(tx,ty);
-    }
-    ctx.strokeStyle=mode==='pred'?'rgba(50,130,220,0.85)':'rgba(34,119,210,1)';
-    ctx.lineWidth=4;ctx.stroke();
+    
+    slidesContainer.appendChild(slideDiv);
+    slideElements.push(slideDiv);
+    
+    const dot = document.createElement('button');
+    dot.className = 'cdot' + (idx === 0 ? ' on' : '');
+    dot.addEventListener('click', () => goToSlide(idx));
+    dotsContainer.appendChild(dot);
+    dotElements.push(dot);
+  });
+  
+  function goToSlide(index) {
+    slideElements[currentIndex].classList.remove('active');
+    dotElements[currentIndex].classList.remove('on');
+    currentIndex = (index + imagePaths.length) % imagePaths.length;
+    slideElements[currentIndex].classList.add('active');
+    dotElements[currentIndex].classList.add('on');
   }
-  ctx.restore();
+  
+  prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+  nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
 }
 
-/* ── Pre-generate vessel tree branch data ────────────── */
-function genBranches(cx,cy,ang,len,seed){
-  const rand=mkRand(seed);
-  const list=[];
-  (function rec(x,y,a,l,d){
-    if(d>6||l<3.5)return;
-    const x2=x+Math.cos(a)*l,y2=y+Math.sin(a)*l;
-    list.push({x,y,x2,y2,d});
-    const sp=.32+rand()*.12,lr=l*(.60+rand()*.12);
-    rec(x2,y2,a-sp,lr,d+1);
-    rec(x2,y2,a+sp*(.8+rand()*.3),lr*.88,d+1);
-    if(d<2)rec(x2,y2,a+.12+rand()*.18,lr*.52,d+2);
-  })(cx,cy,ang,len,0);
-  return list;
-}
+// 为每个数据集生成唯一的ID并初始化轮播
+const datasets = [
+  { name: 'CCM', desc: 'Choroidal vessel segmentation' },
+  { name: 'DRIVE', desc: 'Retinal vessel segmentation' },
+  { name: 'FIVES', desc: 'Retinal vessel segmentation (multi-disease)' },
+  { name: 'ROSE', desc: 'Retinal vessel segmentation' },
+  { name: 'SpermSeg', desc: 'Sperm flagellum segmentation (ours)' }
+];
 
-function renderBranches(ctx,branches,mode){
-  ctx.lineCap='round';ctx.lineJoin='round';
-  branches.forEach(({x,y,x2,y2,d})=>{
-    const lw=Math.max(.5,4.2-d*.62);
-    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x2,y2);ctx.lineWidth=lw;
-    if(mode==='raw')
-      ctx.strokeStyle=`rgba(${168-d*9},${48+d*5},${45+d*3},${.88-d*.08})`;
-    else if(mode==='gt')
-      ctx.strokeStyle=`rgba(255,255,255,${.92-d*.06})`;
-    else
-      ctx.strokeStyle=`rgba(160,205,255,${.85-d*.06})`;
-    ctx.stroke();
+// 图片路径（暂时全部使用相同的三个精子图片，可后续替换）
+const imagePaths = [
+  './SpermSeg/train/images/frame_0557.png',
+  './SpermSeg/train/images/frame_0568.png',
+  './SpermSeg/train/images/frame_0539.png'
+];
+
+// 每个数据集的caption可以根据需要自定义，这里简单使用相同描述
+const defaultCaptions = [
+  'Example 1 (raw image)',
+  'Example 2 (raw image)',
+  'Example 3 (raw image)'
+];
+
+// 在 results-grid 中动态生成五个卡片，并为每个卡片创建独立轮播
+const resultsGrid = document.getElementById('results-grid');
+if (resultsGrid) {
+  datasets.forEach((ds, idx) => {
+    // 创建卡片容器
+    const card = document.createElement('div');
+    card.className = 'dataset-card';
+    
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'dataset-title';
+    titleDiv.innerHTML = `<span>${ds.name}</span> <span style="font-size:0.8rem; font-weight:normal; color:#666;"> — ${ds.desc}</span>`;
+    card.appendChild(titleDiv);
+    
+    // 轮播包装器
+    const carWrap = document.createElement('div');
+    carWrap.className = 'car-wrap';
+    
+    const slidesId = `res-slides-${idx}`;
+    const dotsId = `res-dots-${idx}`;
+    const prevId = `res-prev-${idx}`;
+    const nextId = `res-next-${idx}`;
+    
+    carWrap.innerHTML = `
+      <div class="car-slides" id="${slidesId}"></div>
+      <div class="car-ctrls">
+        <button class="cbtn" id="${prevId}">&#10094;</button>
+        <div class="cdots" id="${dotsId}"></div>
+        <button class="cbtn" id="${nextId}">&#10095;</button>
+      </div>
+    `;
+    card.appendChild(carWrap);
+    resultsGrid.appendChild(card);
+    
+    // 初始化该数据集的轮播
+    initCarousel(slidesId, dotsId, prevId, nextId, imagePaths, defaultCaptions);
   });
 }
 
-/* ── Build dataset canvas (left: image, right: mask) ─── */
-function buildDsCanvas(idx){
-  const W=680,H=290;
-  const c=document.createElement('canvas');c.width=W;c.height=H;
-  const ctx=c.getContext('2d');
-  const half=W/2;
-  const r=mkRand(idx*9371+1);
-
-  // Left panel – raw
-  drawMicBg(ctx,0,0,half,H,mkRand(idx*1234+2));
-  // Right panel – mask bg
-  const grd=ctx.createRadialGradient(half+half/2,H/2,5,half+half/2,H/2,half*.8);
-  grd.addColorStop(0,'hsl(225,20%,10%)');grd.addColorStop(1,'hsl(225,15%,4%)');
-  ctx.fillStyle=grd;ctx.fillRect(half,0,half,H);
-  // right grain
-  for(let i=0;i<half*H*.008;i++){
-    ctx.fillStyle=`rgba(255,255,255,${mkRand(idx*77+i)()*.04})`;
-    ctx.fillRect(half+mkRand(idx*88+i)()*half,mkRand(idx*99+i)()*H,1.5,1.5);
-  }
-
-  // cell configs (relative to left-half coords)
-  const cells=[
-    [half*.26,H*.32,-.18,.82],
-    [half*.60,H*.60, .20,.72],
-    [half*.14,H*.74, .38,.60],
-    [half*.56,H*.20,-.32,.88],
-    [half*.80,H*.82, .10,.65],
-  ].map(([bx,by,a,sc])=>[
-    bx+(r()-.5)*14, by+(r()-.5)*14,
-    a+(r()-.5)*.18, sc+(r()-.5)*.08
-  ]);
-
-  const r2=mkRand(idx*5555+3);
-  // Draw left
-  ctx.save();ctx.beginPath();ctx.rect(0,0,half-1,H);ctx.clip();
-  cells.forEach(([bx,by,a,sc])=>drawSperm(ctx,bx,by,a,sc,'raw',r2));
-  ctx.restore();
-  // Draw right
-  const r3=mkRand(idx*5555+3);// same structure
-  ctx.save();ctx.beginPath();ctx.rect(half+1,0,half-1,H);ctx.clip();
-  cells.forEach(([bx,by,a,sc])=>drawSperm(ctx,half+bx,by,a,sc,'gt',r3));
-  ctx.restore();
-
-  // Divider
-  ctx.fillStyle='rgba(255,255,255,0.22)';ctx.fillRect(half-1,0,2,H);
-  // Label bars
-  [[0,'Input Image'],[half,'Annotation Mask']].forEach(([ox,lbl])=>{
-    ctx.fillStyle='rgba(0,0,0,.58)';ctx.fillRect(ox,H-27,half-1,27);
-    ctx.fillStyle='#fff';ctx.font='bold 12px Lato,sans-serif';
-    ctx.textAlign='center';ctx.fillText(lbl,ox+half*.5,H-9);
-  });
-  // Legend
-  [['Head','#d44444'],['Midpiece','#1a9958'],['Tail','#2277cc']].forEach(([lbl,col],i)=>{
-    const lx=half+13,ly=13+i*19;
-    ctx.fillStyle=col;ctx.fillRect(lx,ly,13,13);
-    ctx.fillStyle='#eee';ctx.font='10px Lato,sans-serif';ctx.textAlign='left';
-    ctx.fillText(lbl,lx+17,ly+10);
-  });
-  return c;
-}
-
-/* ── Build results canvas (3 panels: input|GT|pred) ──── */
-function buildResCanvas(idx){
-  const W=681,H=264;
-  const c=document.createElement('canvas');c.width=W;c.height=H;
-  const ctx=c.getContext('2d');
-  const pw=Math.floor(W/3);
-  const tasks=['sperm','vessel','stare'];
-  const task=tasks[idx%3];
-  const modes=['raw','gt','pred'];
-  const seeds=[idx*1111+10,idx*2222+20,idx*3333+30];
-
-  modes.forEach((mode,mi)=>{
-    const ox=mi*pw;
-    if(task==='sperm'){
-      // background
-      if(mode==='raw') drawMicBg(ctx,ox,0,pw,H,mkRand(idx*444+mi));
-      else {
-        const gb=ctx.createRadialGradient(ox+pw/2,H/2,5,ox+pw/2,H/2,pw*.7);
-        gb.addColorStop(0,'hsl(225,22%,10%)');gb.addColorStop(1,'hsl(225,15%,4%)');
-        ctx.fillStyle=gb;ctx.fillRect(ox,0,pw,H);
-      }
-      ctx.save();ctx.beginPath();ctx.rect(ox,0,pw,H);ctx.clip();
-      const r=mkRand(idx*7777+1);
-      const cells=[
-        [pw*.28,H*.30,-.15,.75],[pw*.65,H*.60, .22,.65],[pw*.18,H*.75, .35,.58]
-      ].map(([bx,by,a,sc])=>[bx+(r()-.5)*10,by+(r()-.5)*10,a,sc]);
-      const dr=mkRand(idx*7777+1+mi*100);
-      cells.forEach(([bx,by,a,sc])=>drawSperm(ctx,ox+bx,by,a,sc,mode,dr));
-      ctx.restore();
-    } else {
-      // retinal vessel
-      const isRaw=mode==='raw';
-      if(isRaw){
-        const grd=ctx.createRadialGradient(ox+pw/2,H/2,6,ox+pw/2,H/2,pw*.65);
-        grd.addColorStop(0,task==='vessel'?'hsl(0,38%,13%)':'hsl(10,30%,10%)');
-        grd.addColorStop(.75,task==='vessel'?'hsl(0,28%,6%)':'hsl(10,22%,5%)');
-        grd.addColorStop(1,'#000');
-        ctx.fillStyle=grd;ctx.fillRect(ox,0,pw,H);
-        // optic disc glow
-        const od=ctx.createRadialGradient(ox+pw*.62,H*.44,2,ox+pw*.62,H*.44,pw*.1);
-        od.addColorStop(0,'rgba(255,215,140,.45)');od.addColorStop(1,'rgba(255,200,100,0)');
-        ctx.fillStyle=od;ctx.fillRect(ox,0,pw,H);
-      } else {
-        ctx.fillStyle='#000';ctx.fillRect(ox,0,pw,H);
-      }
-      const branches=genBranches(
-        ox+pw*.5,H*.52,
-        task==='vessel'?-Math.PI*.52:Math.PI*.18,
-        task==='vessel'?56:60,
-        idx*8888+9
-      );
-      ctx.save();ctx.beginPath();ctx.rect(ox,0,pw,H);ctx.clip();
-      renderBranches(ctx,branches,mode);
-      if(task==='vessel'){
-        const b2=genBranches(ox+pw*.5,H*.52,Math.PI*.28,38,idx*8888+99);
-        const b3=genBranches(ox+pw*.5,H*.52,Math.PI*.72,32,idx*8888+999);
-        renderBranches(ctx,b2,mode);renderBranches(ctx,b3,mode);
-      }
-      ctx.restore();
-    }
-    // Label bar
-    ctx.fillStyle='rgba(0,0,0,.62)';ctx.fillRect(ox,H-26,pw,26);
-    const lbl={raw:'Input',gt:'Ground Truth',pred:'D²Mamba (Ours)'}[mode];
-    ctx.fillStyle=mode==='pred'?'#8ef5b0':'#fff';
-    ctx.font='bold 11px Lato,sans-serif';ctx.textAlign='center';
-    ctx.fillText(lbl,ox+pw/2,H-9);
-    // Divider
-    if(mi<2){ctx.fillStyle='rgba(255,255,255,.22)';ctx.fillRect(ox+pw-1,0,2,H);}
-  });
-  return c;
-}
-
-/* ── Generic carousel factory ────────────────────────── */
-function initCarousel(opts){
-  const {slidesId,dotsId,prevId,nextId,count,builder,captions}=opts;
-  const slidesEl=document.getElementById(slidesId);
-  const dotsEl=document.getElementById(dotsId);
-  let cur=0;
-  const sEls=[],dEls=[];
-
-  for(let i=0;i<count;i++){
-    const div=document.createElement('div');
-    div.className='slide'+(i===0?' active':'');
-    const cv=builder(i);cv.style.display='block';cv.style.width='100%';cv.style.height='auto';
-    div.appendChild(cv);
-    if(captions&&captions[i]){
-      const cap=document.createElement('div');cap.className='slide-cap';
-      cap.innerHTML=captions[i];div.appendChild(cap);
-    }
-    slidesEl.appendChild(div);sEls.push(div);
-
-    const dot=document.createElement('button');
-    dot.className='cdot'+(i===0?' on':'');
-    dot.setAttribute('aria-label',`Slide ${i+1}`);
-    dot.addEventListener('click',()=>go(i));
-    dotsEl.appendChild(dot);dEls.push(dot);
-  }
-
-  function go(n){
-    sEls[cur].classList.remove('active');dEls[cur].classList.remove('on');
-    cur=(n+count)%count;
-    sEls[cur].classList.add('active');dEls[cur].classList.add('on');
-  }
-  document.getElementById(prevId).addEventListener('click',()=>go(cur-1));
-  document.getElementById(nextId).addEventListener('click',()=>go(cur+1));
-}
-
-/* ── Init both carousels ─────────────────────────────── */
-initCarousel({
-  slidesId:'ds-slides',dotsId:'ds-dots',prevId:'ds-prev',nextId:'ds-next',
-  count:3, builder:buildDsCanvas,
-  captions:[
-    'Sample&nbsp;1: Bright-field microscopy — head <span style="color:#c94444">■</span>, midpiece <span style="color:#1a9958">■</span>, and tail <span style="color:#2277cc">■</span> annotations.',
-    'Sample&nbsp;2: Phase-contrast microscopy with multiple sperm cells and fine-grained morphology labels.',
-    'Sample&nbsp;3: Challenging cases featuring partial occlusion, overlapping cells, and low-contrast staining.',
-  ]
-});
-
-initCarousel({
-  slidesId:'res-slides',dotsId:'res-dots',prevId:'res-prev',nextId:'res-next',
-  count:3, builder:buildResCanvas,
-  captions:[
-    'Results on <strong>SpermSeg</strong>: D<sup>2</sup>Mamba accurately delineates all three morphological regions even in cluttered scenes.',
-    'Results on <strong>DRIVE</strong> (retinal vessel segmentation): D<sup>2</sup>Mamba captures fine capillary structures with high connectivity.',
-    'Results on <strong>STARE</strong> (retinal vessel segmentation): D<sup>2</sup>Mamba maintains structural continuity in challenging pathological regions.',
-  ]
-});
+// 初始化 SpermSeg 数据集的轮播（三张白光图像）
+initCarousel('ds-slides', 'ds-dots', 'ds-prev', 'ds-next', imagePaths, [
+  'Bright-field microscopy image — frame_0557 (raw)',
+  'Bright-field microscopy image — frame_0568 (raw)',
+  'Bright-field microscopy image — frame_0539 (raw)'
+]);
 </script>
 </body>
 </html>
