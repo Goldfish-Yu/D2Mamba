@@ -1,7 +1,9 @@
 # D²Mamba: Dual Dynamic State Space Model for Curvilinear Structure Segmentation
 
 <div align="center">
-**Project page**: [https://goldfish-yu.github.io/D2Mamba/](https://goldfish-yu.github.io/D2Mamba/)
+
+<a href="https://goldfish-yu.github.io/D2Mamba/" style="color: #1e90ff; font-weight: bold;">🌐 Project Page</a>
+
 </div>
 
 **Official implementation of D²Mamba**
@@ -11,7 +13,7 @@
 
 ---
 
-## 🔍 What’s included now
+## 🔍 What's included now
 
 - **Part of the SpermSeg dataset** – a subset of the data for demonstration and preliminary evaluation.
 
