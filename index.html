@@ -12,7 +12,6 @@ a{color:inherit;text-decoration:none}
 
 .page{max-width:920px;margin:0 auto;padding:0 24px}
 
-/* ── HEADER ─────────────────────────────────────────── */
 .site-header{text-align:center;padding:72px 24px 52px}
 .site-header h1{
   font-family:'Merriweather',serif;
@@ -36,7 +35,6 @@ a{color:inherit;text-decoration:none}
 }
 .badge:hover{background:#222;color:#fff}
 
-/* ── SECTIONS ────────────────────────────────────────── */
 .sec{padding:50px 0;border-top:1px solid #ebebeb}
 .sec-title{
   font-family:'Merriweather',serif;font-size:1.4rem;font-weight:700;
@@ -46,12 +44,30 @@ a{color:inherit;text-decoration:none}
   text-align:center;color:#555;font-size:.92rem;
   max-width:680px;margin:0 auto 26px;line-height:1.75
 }
-.abstract-text{
-  font-family:'Merriweather',serif;font-size:.92rem;
-  line-height:1.95;color:#333;text-align:justify
+.sec-desc.left {
+  text-align: left;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }
-
-/* ── CAROUSEL (通用) ────────────────────────────────── */
+.abstract-text{
+  font-family:'Merriweather',serif;
+  font-size:.92rem;
+  line-height:1.95;
+  color:#333;
+  text-align: left;  
+}
+.dataset-description {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: #3a3a3a;
+  background: #fafafc;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 12px 0 18px 0;
+  text-align: left;
+  border-left: 3px solid #8aaec0;
+}
 .car-wrap{max-width:720px;margin:0 auto;margin-bottom:30px}
 .car-slides{border:1px solid #e0e0e0;border-radius:4px;overflow:hidden;background:#f9f9f9}
 .slide{display:none}
@@ -77,7 +93,6 @@ a{color:inherit;text-decoration:none}
 }
 .cdot.on{background:#333}
 
-/* 五个数据集的网格布局 */
 .results-grid{
   display:flex;flex-direction:column;gap:40px;
   margin-top:20px;
@@ -95,7 +110,6 @@ a{color:inherit;text-decoration:none}
   background:#eef2f5;padding:4px 14px;border-radius:30px;
 }
 
-/* ── FOOTER ──────────────────────────────────────────── */
 footer{
   text-align:center;padding:36px 24px;border-top:1px solid #ebebeb;
   font-size:.8rem;color:#bbb
@@ -109,7 +123,6 @@ footer{
 </head>
 <body>
 
-<!-- ══ HEADER ══════════════════════════════════════════ -->
 <header class="site-header">
   <div class="status">📌 Currently under review at IEEE Transactions on Medical Imaging (TMI)</div>
   <h1>D<sup>2</sup>Mamba: Dual Dynamic State Space Model<br>for Curvilinear Structure Segmentation</h1>
@@ -135,31 +148,17 @@ footer{
 
 <div class="page">
 
-  <!-- ══ ABSTRACT ══════════════════════════════════════ -->
   <section class="sec">
-    <h2 class="sec-title">Abstract</h2>
+    <h2 class="sec-title">Introduction</h2>
     <p class="abstract-text">
-      Curvilinear structure segmentation—encompassing retinal vessels, nerve fibers, road networks, and
-      sperm tails—is a fundamental problem in medical and remote-sensing image analysis. Existing CNN-based
-      methods are limited by their local receptive fields, while Vision Transformers suffer from quadratic
-      computational complexity, both struggling to capture the global structural continuity intrinsic to
-      curvilinear shapes. We propose <strong>D<sup>2</sup>Mamba</strong>, a <strong>D</strong>ual
-      <strong>D</strong>ynamic State Space Model that introduces two complementary selective scanning
-      streams: a directional multi-scale scan that traces structural continuity along curvilinear paths, and
-      a frequency-aware dynamic scan that exploits texture-level discriminability at fine scales. The two
-      streams are fused via a learnable gating mechanism, yielding rich representations with linear
-      computational complexity. We further introduce <strong>SpermSeg</strong>, a challenging new benchmark
-      with pixel-level annotations for sperm <span style="color:#c94444">head</span>,
-      <span style="color:#1a9958">midpiece</span>, and <span style="color:#2277cc">tail</span> regions.
-      Extensive experiments on SpermSeg and four public benchmarks show that D<sup>2</sup>Mamba achieves
-      state-of-the-art performance while maintaining competitive efficiency.
+      This paper presents a novel curvilinear structure segmentation method based on Mamba, 
+      named <strong>D²Mamba</strong> (Dual Dynamic State Space Model). 
     </p>
   </section>
 
-  <!-- ══ SPERMSEG DATASET ═══════════════════════════════ -->
   <section class="sec">
     <h2 class="sec-title">SpermSeg Dataset</h2>
-    <p class="sec-desc">
+    <p class="sec-desc left">
       SpermSeg is the <strong>first publicly available dataset</strong> dedicated to <strong>sperm flagellum segmentation</strong> from bright‑field microscopy.
       It comprises <strong>310 white‑light images</strong> (1920 × 1200 pixels each), each capturing multiple spermatozoa with intact flagella under realistic,
       unlabeled conditions. Pixel‑wise binary masks are provided for the flagellar regions, enabling supervised learning
@@ -167,7 +166,6 @@ footer{
       Beyond CASA (computer‑assisted sperm analysis), SpermSeg serves as a challenging benchmark for general curvilinear object segmentation
       (e.g., retinal vessels, roads, plant roots). Below are three example raw images from the dataset.
     </p>
-    <!-- 轮播图：三个原始白光图像 -->
     <div class="car-wrap">
       <div class="car-slides" id="ds-slides"></div>
       <div class="car-ctrls">
@@ -178,15 +176,13 @@ footer{
     </div>
   </section>
 
-  <!-- ══ MORE RESULTS (5个数据集，每个3图轮播) ═══════════ -->
   <section class="sec">
     <h2 class="sec-title">More Results</h2>
-    <p class="sec-desc">
+    <p class="sec-desc left">
       Qualitative comparisons of D<sup>2</sup>Mamba against state-of-the-art methods on multiple curvilinear structure segmentation benchmarks.
-      Each dataset below shows three representative samples.
+      Each dataset below shows three representative samples along with detailed characteristics.
     </p>
     <div class="results-grid" id="results-grid">
-      <!-- 五个数据集卡片会由JS动态生成，保证结构一致 -->
     </div>
   </section>
 
@@ -195,7 +191,6 @@ footer{
 <footer>D<sup>2</sup>Mamba Project Page</footer>
 
 <script>
-// 通用轮播初始化函数
 function initCarousel(slidesContainerId, dotsContainerId, prevBtnId, nextBtnId, imagePaths, captions) {
   const slidesContainer = document.getElementById(slidesContainerId);
   const dotsContainer = document.getElementById(dotsContainerId);
@@ -208,11 +203,9 @@ function initCarousel(slidesContainerId, dotsContainerId, prevBtnId, nextBtnId, 
   const slideElements = [];
   const dotElements = [];
   
-  // 清空容器
   slidesContainer.innerHTML = '';
   dotsContainer.innerHTML = '';
   
-  // 创建每个slide
   imagePaths.forEach((path, idx) => {
     const slideDiv = document.createElement('div');
     slideDiv.className = 'slide' + (idx === 0 ? ' active' : '');
@@ -253,43 +246,41 @@ function initCarousel(slidesContainerId, dotsContainerId, prevBtnId, nextBtnId, 
   nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
 }
 
-// 为每个数据集生成唯一的ID并初始化轮播
+
+
 const datasets = [
-  { name: 'CCM', desc: 'Choroidal vessel segmentation' },
-  { name: 'DRIVE', desc: 'Retinal vessel segmentation' },
-  { name: 'FIVES', desc: 'Retinal vessel segmentation (multi-disease)' },
-  { name: 'ROSE', desc: 'Retinal vessel segmentation' },
-  { name: 'SpermSeg', desc: 'Sperm flagellum segmentation (ours)' }
+  { name: 'CCM', descKey: 'CCM' },
+  { name: 'DRIVE', descKey: 'DRIVE' },
+  { name: 'FIVES', descKey: 'FIVES' },
+  { name: 'ROSE', descKey: 'ROSE' },
+  { name: 'SpermSeg', descKey: 'SpermSeg' }
 ];
 
-// 图片路径（暂时全部使用相同的三个精子图片，可后续替换）
 const imagePaths = [
   './SpermSeg/train/images/frame_0557.png',
   './SpermSeg/train/images/frame_0568.png',
   './SpermSeg/train/images/frame_0539.png'
 ];
 
-// 每个数据集的caption可以根据需要自定义，这里简单使用相同描述
 const defaultCaptions = [
-  'Example 1 (raw image)',
-  'Example 2 (raw image)',
-  'Example 3 (raw image)'
+  'Representative sample — raw image',
+  'Representative sample — raw image',
+  'Representative sample — raw image'
 ];
 
-// 在 results-grid 中动态生成五个卡片，并为每个卡片创建独立轮播
 const resultsGrid = document.getElementById('results-grid');
 if (resultsGrid) {
   datasets.forEach((ds, idx) => {
-    // 创建卡片容器
     const card = document.createElement('div');
     card.className = 'dataset-card';
     
     const titleDiv = document.createElement('div');
     titleDiv.className = 'dataset-title';
-    titleDiv.innerHTML = `<span>${ds.name}</span> <span style="font-size:0.8rem; font-weight:normal; color:#666;"> — ${ds.desc}</span>`;
+    titleDiv.innerHTML = `<span>${ds.name}</span> <span style="font-size:0.8rem; font-weight:normal/span>`;
     card.appendChild(titleDiv);
     
-    // 轮播包装器
+
+    
     const carWrap = document.createElement('div');
     carWrap.className = 'car-wrap';
     
@@ -309,16 +300,14 @@ if (resultsGrid) {
     card.appendChild(carWrap);
     resultsGrid.appendChild(card);
     
-    // 初始化该数据集的轮播
     initCarousel(slidesId, dotsId, prevId, nextId, imagePaths, defaultCaptions);
   });
 }
 
-// 初始化 SpermSeg 数据集的轮播（三张白光图像）
 initCarousel('ds-slides', 'ds-dots', 'ds-prev', 'ds-next', imagePaths, [
-  'Bright-field microscopy image — frame_0557 (raw)',
-  'Bright-field microscopy image — frame_0568 (raw)',
-  'Bright-field microscopy image — frame_0539 (raw)'
+  'SpermSeg Dataset Example 1',
+  'SpermSeg Dataset Example 2',
+  'SpermSeg Dataset Example 3'
 ]);
 </script>
 </body>
