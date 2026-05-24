@@ -110,6 +110,26 @@ a{color:inherit;text-decoration:none}
   background:#eef2f5;padding:4px 14px;border-radius:30px;
 }
 
+/* === caption 中的颜色高亮（与论文一致的 RGB） === */
+.green  { color: rgb(129,255,128); font-weight: 700; }
+.red    { color: rgb(127,0,0);     font-weight: 700; }
+.purple { color: rgb(128,128,255); font-weight: 700; }
+
+/* === 5 个数据集 caption 左对齐（不影响顶部 SpermSeg 数据集展示区） === */
+.dataset-card .slide-cap{
+  text-align: left;
+  font-style: normal;
+  padding: 12px 16px;
+}
+
+/* === caption 内的小提示样式 === */
+.open-tip{
+  margin-top: 8px;
+  font-size: .76rem;
+  color: #888;
+  font-style: italic;
+}
+
 footer{
   text-align:center;padding:36px 24px;border-top:1px solid #ebebeb;
   font-size:.8rem;color:#bbb
@@ -160,7 +180,7 @@ footer{
     <h2 class="sec-title">SpermSeg Dataset</h2>
     <p class="sec-desc left">
       SpermSeg is the <strong>first publicly available dataset</strong> dedicated to <strong>sperm flagellum segmentation</strong> from bright‑field microscopy.
-      It comprises <strong>310 white‑light images</strong> (1920 × 1200 pixels each), each capturing multiple spermatozoa with intact flagella under realistic,
+      It comprises <strong>310 white‑light images</strong> (1920 × 1200 pixels each), each capturing multiple spermatozoa with intact flagella under realistic,
       unlabeled conditions. Pixel‑wise binary masks are provided for the flagellar regions, enabling supervised learning
       of curvilinear structures in densely cluttered scenes with low contrast, overlapping tails, and debris.
       Beyond CASA (computer‑assisted sperm analysis), SpermSeg serves as a challenging benchmark for general curvilinear object segmentation
@@ -179,8 +199,15 @@ footer{
   <section class="sec">
     <h2 class="sec-title">More Results</h2>
     <p class="sec-desc left">
-      Qualitative comparisons of D<sup>2</sup>Mamba against state-of-the-art methods on multiple curvilinear structure segmentation benchmarks.
-      Each dataset below shows three representative examples with unique image paths (different from all others).
+      Qualitative comparison of segmentation results across the five datasets.
+      To better reveal fine structural details, <b>color-coded error maps</b> are provided for
+      <b>DRIVE</b>, <b>FIVES</b>, and <b>ROSE</b>, where
+      <span class="green">green</span> denotes correct predictions,
+      <span class="red">red</span> denotes missed structures, and
+      <span class="purple">purple</span> denotes over-segmentation.
+      <b>Binary predictions</b> are shown for <b>CCM</b> and <b>SpermSeg</b>, where the
+      curvilinear structures in the selected examples are comparatively sparser.
+      D²Mamba maintains superior structural continuity across all tasks.
     </p>
     <div class="results-grid" id="results-grid">
     </div>
@@ -266,52 +293,71 @@ const datasetImageMap = {
     './more_result/CCM_result3.svg'
   ],
   DRIVE: [
-    './more_result/example_drive_01.jpg',
-    './more_result/example_drive_02.jpg',
-    './more_result/example_drive_03.jpg'
+    './more_result/drive_result1.svg',
+    './more_result/drive_result2.svg',
+    './more_result/drive_result3.svg'
   ],
   FIVES: [
-    './more_result/fives_example_a.jpg',
-    './more_result/fives_example_b.jpg',
-    './more_result/fives_example_c.jpg'
+    './more_result/fives_result1.svg',
+    './more_result/fives_result2.svg',
+    './more_result/fives_result3.svg'
   ],
   ROSE: [
-    './more_result/rose_curvilinear_1.jpg',
-    './more_result/rose_curvilinear_2.jpg',
-    './more_result/rose_curvilinear_3.jpg'
+    './more_result/rose_result1.svg',
+    './more_result/rose_result2.svg',
+    './more_result/rose_result3.svg'
   ],
   SpermSeg: [
-    './more_result/ss_comparison_1.jpg',
-    './more_result/ss_comparison_2.jpg',
-    './more_result/ss_comparison_3.jpg'
+    './more_result/ss_result1.svg',
+    './more_result/ss_result2.svg',
+    './more_result/ss_result3.svg'
   ]
 };
 
+// --- Caption builders ----------------------------------------------------
+// CCM 与 SpermSeg：二值预测，无颜色编码
+const binaryCaption = (figNum, dsName) => `
+  <b>Figure ${figNum}.</b> Qualitative comparison of segmentation results on the <b>${dsName}</b> dataset.
+  <b>Binary predictions</b> are shown here, since the curvilinear structures in the selected examples are
+  comparatively sparser. D²Mamba maintains superior structural continuity and topology preservation
+  across challenging regions.
+  <div class="open-tip">If the image is unclear, right-click on it and select "Open image in new tab" to view the full size.</div>`;
+
+// DRIVE / FIVES / ROSE：彩色 error map
+const errorMapCaption = (figNum, dsName) => `
+  <b>Figure ${figNum}.</b> Qualitative comparison of segmentation results on the <b>${dsName}</b> dataset.
+  <b>Color-coded error maps</b> are used to highlight fine structural details:
+  <span class="green">green</span> denotes correct predictions,
+  <span class="red">red</span> denotes missed structures, and
+  <span class="purple">purple</span> denotes over-segmentation.
+  D²Mamba preserves vascular topology and continuity even in challenging pathological regions.
+  <div class="open-tip">If the image is unclear, right-click on it and select "Open image in new tab" to view the full size.</div>`;
+
 const datasetCaptionMap = {
   CCM: [
-    'CCM result example 1',
-    'CCM result example 2',
-    'CCM result example 3'
+    binaryCaption(1, 'CCM'),
+    binaryCaption(2, 'CCM'),
+    binaryCaption(3, 'CCM')
   ],
   DRIVE: [
-    'DRIVE result example 1',
-    'DRIVE result example 2',
-    'DRIVE result example 3'
+    errorMapCaption(4, 'DRIVE'),
+    errorMapCaption(5, 'DRIVE'),
+    errorMapCaption(6, 'DRIVE')
   ],
   FIVES: [
-    'FIVES result example 1',
-    'FIVES result example 2',
-    'FIVES result example 3'
+    errorMapCaption(7,  'FIVES'),
+    errorMapCaption(8,  'FIVES'),
+    errorMapCaption(9,  'FIVES')
   ],
   ROSE: [
-    'ROSE result example 1',
-    'ROSE result example 2',
-    'ROSE result example 3'
+    errorMapCaption(10, 'ROSE'),
+    errorMapCaption(11, 'ROSE'),
+    errorMapCaption(12, 'ROSE')
   ],
   SpermSeg: [
-    'SpermSeg result example 1',
-    'SpermSeg result example 2',
-    'SpermSeg result example 3'
+    binaryCaption(13, 'SpermSeg'),
+    binaryCaption(14, 'SpermSeg'),
+    binaryCaption(15, 'SpermSeg')
   ]
 };
 
