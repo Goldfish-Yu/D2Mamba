@@ -1,6 +1,8 @@
 # D²Mamba: Dual Dynamic State Space Model for Curvilinear Structure Segmentation
 
+<div align="center">
 **Project page**: [https://goldfish-yu.github.io/D2Mamba/](https://goldfish-yu.github.io/D2Mamba/)
+</div>
 
 **Official implementation of D²Mamba**
 
