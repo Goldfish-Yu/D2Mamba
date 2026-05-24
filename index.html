@@ -72,7 +72,7 @@ a{color:inherit;text-decoration:none}
 .car-slides{border:1px solid #e0e0e0;border-radius:4px;overflow:hidden;background:#f9f9f9}
 .slide{display:none}
 .slide.active{display:block}
-.slide img{display:block;width:100%;height:auto}
+.slide img{display:block;width:100%;height:auto;background:#f1f1f1;}
 .slide-cap{
   padding:9px 16px;font-size:.82rem;color:#555;
   background:#fafafa;border-top:1px solid #eee;
@@ -164,7 +164,7 @@ footer{
       unlabeled conditions. Pixel‑wise binary masks are provided for the flagellar regions, enabling supervised learning
       of curvilinear structures in densely cluttered scenes with low contrast, overlapping tails, and debris.
       Beyond CASA (computer‑assisted sperm analysis), SpermSeg serves as a challenging benchmark for general curvilinear object segmentation
-      (e.g., retinal vessels, roads, plant roots). Below are three example raw images from the dataset.
+      (e.g., retinal vessels, roads, plant roots). Below are three distinct raw images from the dataset (each with unique path).
     </p>
     <div class="car-wrap">
       <div class="car-slides" id="ds-slides"></div>
@@ -180,7 +180,7 @@ footer{
     <h2 class="sec-title">More Results</h2>
     <p class="sec-desc left">
       Qualitative comparisons of D<sup>2</sup>Mamba against state-of-the-art methods on multiple curvilinear structure segmentation benchmarks.
-      Each dataset below shows three representative samples along with detailed characteristics.
+      Each dataset below shows three representative samples with unique image paths (different from all others).
     </p>
     <div class="results-grid" id="results-grid">
     </div>
@@ -246,48 +246,107 @@ function initCarousel(slidesContainerId, dotsContainerId, prevBtnId, nextBtnId, 
   nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
 }
 
+// --------------------------------------------------------------
+const spermSegExampleImages = [
+  './SpermSeg/train/images/frame_0568.png',
+  './SpermSeg/train/images/frame_0539.png',
+  './SpermSeg/train/images/frame_0567.png'
+];
+const spermSegCaptions = [
+  'SpermSeg dataset sample 1',
+  'SpermSeg dataset sample 2',
+  'SpermSeg dataset sample 3'
+];
 
+
+const datasetImageMap = {
+  CCM: [
+    './more_result/CCM_result1.jpg',
+    './more_result/qualitative_2_vessel.jpg',
+    './more_result/qualitative_3_compare.png'
+  ],
+  DRIVE: [
+    './more_result/sample_drive_01.png',
+    './more_result/sample_drive_02.jpg',
+    './more_result/sample_drive_03.png'
+  ],
+  FIVES: [
+    './more_result/fives_example_a.jpg',
+    './more_result/fives_example_b.png',
+    './more_result/fives_example_c.jpg'
+  ],
+  ROSE: [
+    './more_result/rose_curvilinear_1.jpg',
+    './more_result/rose_curvilinear_2.png',
+    './more_result/rose_curvilinear_3.jpg'
+  ],
+  SpermSeg: [
+    './more_result/ss_comparison_1.png',
+    './more_result/ss_comparison_2.jpg',
+    './more_result/ss_comparison_3.png'
+  ]
+};
+
+const datasetCaptionMap = {
+  CCM: [
+    'CCM result sample 1',
+    'CCM result sample 2',
+    'CCM result sample 3'
+  ],
+  DRIVE: [
+    'DRIVE result sample 1',
+    'DRIVE result sample 2',
+    'DRIVE result sample 3'
+  ],
+  FIVES: [
+    'FIVES result sample 1',
+    'FIVES result sample 2',
+    'FIVES result sample 3'
+  ],
+  ROSE: [
+    'ROSE result sample 1',
+    'ROSE result sample 2',
+    'ROSE result sample 3'
+  ],
+  SpermSeg: [
+    'SpermSeg result sample 1',
+    'SpermSeg result sample 2',
+    'SpermSeg result sample 3'
+  ]
+};
 
 const datasets = [
-  { name: 'CCM', descKey: 'CCM' },
-  { name: 'DRIVE', descKey: 'DRIVE' },
-  { name: 'FIVES', descKey: 'FIVES' },
-  { name: 'ROSE', descKey: 'ROSE' },
-  { name: 'SpermSeg', descKey: 'SpermSeg' }
-];
-
-const imagePaths = [
-  './SpermSeg/train/images/frame_0557.png',
-  './SpermSeg/train/images/frame_0568.png',
-  './SpermSeg/train/images/frame_0539.png'
-];
-
-const defaultCaptions = [
-  'Representative sample — raw image',
-  'Representative sample — raw image',
-  'Representative sample — raw image'
+  { name: 'CCM', displayName: 'CCM (Retinal Vessels)' },
+  { name: 'DRIVE', displayName: 'DRIVE' },
+  { name: 'FIVES', displayName: 'FIVES' },
+  { name: 'ROSE', displayName: 'ROSE (Road Extraction)' },
+  { name: 'SpermSeg', displayName: 'SpermSeg (Flagellum)' }
 ];
 
 const resultsGrid = document.getElementById('results-grid');
 if (resultsGrid) {
+  resultsGrid.innerHTML = ''; 
   datasets.forEach((ds, idx) => {
+    const dsKey = ds.name;
+    const imageList = datasetImageMap[dsKey];
+    const captionList = datasetCaptionMap[dsKey];
+    if (!imageList) return;
+    
     const card = document.createElement('div');
     card.className = 'dataset-card';
     
     const titleDiv = document.createElement('div');
     titleDiv.className = 'dataset-title';
-    titleDiv.innerHTML = `<span>${ds.name}</span> <span style="font-size:0.8rem; font-weight:normal/span>`;
+    titleDiv.innerHTML = `<span>${ds.displayName}</span>`;
     card.appendChild(titleDiv);
-    
-
     
     const carWrap = document.createElement('div');
     carWrap.className = 'car-wrap';
     
-    const slidesId = `res-slides-${idx}`;
-    const dotsId = `res-dots-${idx}`;
-    const prevId = `res-prev-${idx}`;
-    const nextId = `res-next-${idx}`;
+    const slidesId = `res-slides-${dsKey}-${idx}`;
+    const dotsId = `res-dots-${dsKey}-${idx}`;
+    const prevId = `res-prev-${dsKey}-${idx}`;
+    const nextId = `res-next-${dsKey}-${idx}`;
     
     carWrap.innerHTML = `
       <div class="car-slides" id="${slidesId}"></div>
@@ -300,15 +359,12 @@ if (resultsGrid) {
     card.appendChild(carWrap);
     resultsGrid.appendChild(card);
     
-    initCarousel(slidesId, dotsId, prevId, nextId, imagePaths, defaultCaptions);
+    initCarousel(slidesId, dotsId, prevId, nextId, imageList, captionList);
   });
 }
 
-initCarousel('ds-slides', 'ds-dots', 'ds-prev', 'ds-next', imagePaths, [
-  'SpermSeg Dataset Example 1',
-  'SpermSeg Dataset Example 2',
-  'SpermSeg Dataset Example 3'
-]);
+initCarousel('ds-slides', 'ds-dots', 'ds-prev', 'ds-next', spermSegExampleImages, spermSegCaptions);
+
 </script>
 </body>
 </html>
