@@ -1,5 +1,7 @@
 # D²Mamba: Dual Dynamic State Space Model for Curvilinear Structure Segmentation
 
+**Project page**: [https://goldfish-yu.github.io/D2Mamba/](https://goldfish-yu.github.io/D2Mamba/)
+
 **Official implementation of D²Mamba**
 
 > 📌 **Current status**: This repository is under active development. The paper is **under review at IEEE Transactions on Medical Imaging (TMI)**.  
@@ -15,7 +17,7 @@ The full SpermSeg dataset (complete annotations and raw data) and the complete t
 
 ---
 
-## 📝 To‑Do List (post‑acceptance)
+## 📝 To‑Do List (After‑acceptance)
 
 - [ ] Release **full SpermSeg dataset** (all images and corresponding ground‑truth maps).
 - [ ] Upload **complete training & inference code** (including data loaders, configuration files, and pre‑trained weights).
@@ -32,4 +34,3 @@ All materials will be updated as soon as the paper is formally accepted.
 ---
 
 ## 📬 Citation (to be updated)
-
