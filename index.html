@@ -317,16 +317,16 @@ const datasetImageMap = {
     './more_result/rose_result3.svg'
   ],
   SpermSeg: [
-    './more_result/ss_result1.svg',
+    './more_result/ss_result3.svg',
     './more_result/ss_result2.svg',
-    './more_result/ss_result3.svg'
+    './more_result/ss_result1.svg'
   ]
 };
 
 // --- Caption builders ----------------------------------------------------
 const svgTip = `<div class="open-tip">Recommended: Right-click the image and select "Open Image in New Tab" to view the scalable vector graphic (SVG) at full fidelity.</div>`;
 
-// CCM 与 SpermSeg：二值预测，无颜色编码
+// CCM：二值预测，无颜色编码
 const binaryCaption = (figNum, dsName) => `
   <b>Figure ${figNum}.</b> Qualitative comparison of segmentation results on the <b>${dsName}</b> dataset.
   <b>Binary predictions</b> are shown here, since the curvilinear structures in the selected examples are
@@ -342,6 +342,25 @@ const errorMapCaption = (figNum, dsName) => `
   <span class="red">red</span> denotes missed structures, and
   <span class="purple">purple</span> denotes over-segmentation.
   D²Mamba preserves vascular topology and continuity even in challenging pathological regions.
+  ${svgTip}`;
+
+// SpermSeg Figure 13：二值预测，展示环断裂
+const spermBinaryCaption = (figNum) => `
+  <b>Figure ${figNum}.</b> Qualitative comparison of segmentation results on the <b>SpermSeg</b> dataset.
+  <b>Binary predictions</b> are shown here to highlight structural <b>ring breakage</b>:
+  whether the closed circular flagellar loop is correctly preserved or incorrectly broken into open arcs
+  is clearly discernible in binary form without color coding.
+  D²Mamba is the only method that successfully maintains ring closure in this challenging case.
+  ${svgTip}`;
+
+// SpermSeg Figure 14 & 15：彩色 error map
+const spermErrorMapCaption = (figNum) => `
+  <b>Figure ${figNum}.</b> Qualitative comparison of segmentation results on the <b>SpermSeg</b> dataset.
+  <b>Color-coded error maps</b> are used to highlight fine structural details:
+  <span class="green">green</span> denotes correct predictions,
+  <span class="red">red</span> denotes missed structures, and
+  <span class="purple">purple</span> denotes over-segmentation.
+  D²Mamba achieves superior segmentation performance on sperm flagella.
   ${svgTip}`;
 
 const datasetCaptionMap = {
@@ -366,9 +385,9 @@ const datasetCaptionMap = {
     errorMapCaption(12, 'ROSE')
   ],
   SpermSeg: [
-    binaryCaption(13, 'SpermSeg'),
-    binaryCaption(14, 'SpermSeg'),
-    binaryCaption(15, 'SpermSeg')
+    spermBinaryCaption(13),
+    spermErrorMapCaption(14),
+    spermErrorMapCaption(15)
   ]
 };
 
