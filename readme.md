@@ -9,7 +9,7 @@
 **Official implementation of D²Mamba**
 
 > 📌 **Current status**: This repository is under active development. The paper is **under review at IEEE Transactions on Medical Imaging (TMI)**.  
-> Full code and the complete SpermSeg dataset will be made publicly available upon paper acceptance, in compliance with our open‑science commitment.
+> Full code and the complete SpermSeg dataset will be made publicly available upon paper acceptance.
 
 ---
 
